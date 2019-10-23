@@ -4,9 +4,9 @@ class HomePage {
         this.selenium.getURL("https://lh-crm.herokuapp.com/")
     }
 
-    // This Method gets 3 parameters to locate page button, click on this button and validate it navigate to the right page.
-    async navigateToGivenPage(locatorType, locatoeVal, index) {
-        const navBar = await this.selenium.findElementListBy(locatorType, locatoeVal)
+    // This Method gets index parameter to locate page button, click on this button and validate it navigate to the right page.
+    async navigateToGivenPage(index) {
+        const navBar = await this.selenium.findElementListBy("className", "nav-btn")
         await this.selenium.clickElement(null, null, navBar[index])
         if (index == 0) {
             await this.selenium.validURL("analytics")
@@ -20,12 +20,10 @@ class HomePage {
     }
 
     // This method clicks on the color button and validate the color status has changed after click.
-    async addOrRemoveColor(locatorType, locatoeVal) {
-        let colorButton = await this.selenium.findElementBy("className", "color-btn")
-        const colorButtonText = colorButton.getText()
-        await this.selenium.clickElement(null, null, colorButton)
-        colorButton = await this.selenium.findElementBy("className", "color-btn")
-        const ColorButtonNewText = colorButton.getText()
+    async addOrRemoveColor() {
+        let colorButtonText = await this.selenium.getTextFromElement("className", "color-btn")
+        await this.selenium.clickElement("className", "color-btn")
+        const ColorButtonNewText = await this.selenium.getTextFromElement("className", "color-btn")
         if (colorButtonText != ColorButtonNewText) {
             console.log("Page color status changed successfully")
         }

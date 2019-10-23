@@ -19,6 +19,10 @@ class SelenuimInfra{
         }, 1000)
     }
 
+    async sleep(){ // Close browser
+        await this.driver.sleep(1000)
+    }
+
     async validURL(pageName){
         if(this.driver.wait(until.urlContains(pageName) , 10000)){
             console.log("This Is The Right URL")

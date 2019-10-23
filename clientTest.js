@@ -7,15 +7,16 @@ class ClientsPageTest {
         this.clientsPage = new ClientsPage(this.testSelenium)
     }
    
-    // This methos testing searching client by calling to function in the clientsPage and give it 6 parameters.
-    async searchForClient(locatorType, locatorVal, select, locatorType2, locatorVal2, select2) {
-        await this.clientsPage.searchAndValidateClient(locatorType, locatorVal, select, locatorType2, locatorVal2, select2)
+    // This function gets two parameters - values to the Select and Search fields, sorting clients results according to the 
+    // parameters and then validate the results.
+    async searchForClient(selectValue, searchValue) {
+        const numberOfClientsPasges = await this.clientsPage.searchAndValidateClient(selectValue, searchValue)
+        await this.clientsPage.validateClientsResultsRelevance(numberOfClientsPasges, selectValue)
     }
 
-    // This methos testing Navigating all clients pagaes by calling to function in the clientsPage and give it 2 parameters.
-    // this test implements as stability test.
-    async clickOnArrowToNavigateAllPages(locatoeType, locatorVal) {
-        await this.clientsPage.clickOnArrowToNavigateAllPages(locatoeType, locatorVal)
+    // This function gets parameter and then call a function that Navigates through the clients pages according to the parameter.
+    async clickOnArrowToNavigateAllPages(locatorVal) {
+        await this.clientsPage.clickOnArrowToNavigateAllPages(locatorVal)
     }
 
     // This method test all clients in the current page pop up screen using calling function in the clientsPage.
@@ -26,7 +27,11 @@ class ClientsPageTest {
 }
     
 let clientPageTest = new ClientsPageTest()
-clientPageTest.searchForClient("className", "select-css", "name", "className", "search-clients", "gugu moore")
-clientPageTest.clickOnArrowToNavigateAllPages("name", "next")
-clientPageTest.checkClientDetailsPopUpScreen()
 
+async function runClientPageTests() {
+    await clientPageTest.clickOnArrowToNavigateAllPages("next") // Stability test.
+    await clientPageTest.searchForClient("owner", "Leila Howe")
+    await clientPageTest.checkClientDetailsPopUpScreen() // Stability test.
+}
+
+runClientPageTests()

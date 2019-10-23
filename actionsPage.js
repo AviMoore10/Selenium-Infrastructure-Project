@@ -6,13 +6,14 @@ class ActionsPage {
 
     // The method gets two strings variables first name and last name of client as parameters, navigate from Actions page to 
     // Client page, type name in the select field and type the first name and last name strings inthe search field.
-    async NavigateClientPageSearchForClient(client) {
+    async NavigateToClientPageToSearchForClient(clientName) {
         const webPagesButtons = await this.selenium.findElementListBy("className", "nav-btn")
         await this.selenium.clickElement(null, null, webPagesButtons[2])
         await this.selenium.write("name", "className", "select-css")
         const searchClients = await this.selenium.findElementBy("className", "search-clients")
-        await this.selenium.write(client ,"tagName", "input", null, searchClients)
+        await this.selenium.write(clientName ,"tagName", "input", null, searchClients)
         console.log("clients list updated")
+        await this.selenium.sleep()
     }
 
     // The method gets two strings variables first name and last name of client as parameters, runs all over the client list and 
@@ -22,18 +23,24 @@ class ActionsPage {
         let clientResultFirstName
         let clientResultLastName
         let counter = 0
-        for (let client of clientsResults) {
-            clientResultFirstName = await this.selenium.getTextFromElement("tagName", "th", null, client)
-            clientResultLastName = await this.selenium.getTextFromElement("tagName", "th:nth-child(2)", null, client)
-            if (firstName.toLowerCase() === clientResultFirstName.toLowerCase() 
-                && lastName.toLowerCase() === clientResultLastName.toLowerCase()) {
-                    counter++
-            }
-            if (counter === clientsResults.length) {
-                console.log("The client was found")
-            }
-            else {
-                console.log("The client wasn't found")
+        if (!clientsResults) {
+            console.log("The client wasn't created")
+        }
+        else {
+            for (let client of clientsResults) {
+                clientResultFirstName = await this.selenium.getTextFromElement("tagName", "th", null, client)
+                clientResultLastName = await this.selenium.getTextFromElement("tagName", "th:nth-child(2)", null, client)
+                if (firstName.toLowerCase() === clientResultFirstName.toLowerCase() 
+                    && lastName.toLowerCase() === clientResultLastName.toLowerCase()) {
+                        counter++
+                }
+                const clientsResultsLength = clientsResults.length
+                if (counter === clientsResultsLength) {
+                    console.log("The client was found")
+                }
+                else {
+                    console.log("The client wasn't found")
+                }
             }
         }
     }
@@ -43,7 +50,7 @@ class ActionsPage {
         await this.selenium.write(firstName, "id", "firstName")
         await this.selenium.write(lastName, "id", "lastName")
         await this.selenium.write(country, "id", "country")
-        await this.selenium.write(owner, "id", "owner")
+        await this.selenium.write(owner, "css", "input#owner")
         await this.selenium.write(email, "id", "email")
         await this.selenium.clickElement("className", "add-client-btn")
     }
@@ -60,7 +67,8 @@ class ActionsPage {
         const changeOwner = await this.selenium.findElementBy("className", "change-owner")
         const changeOwnerButton = await this.selenium.findElementBy("tagName", "th:nth-child(3)", changeOwner)
         await this.selenium.clickElement("tagName", "input", null, changeOwnerButton)
-        await this.NavigateClientPageSearchForClient(clientName)
+        await this.selenium.sleep()
+        await this.NavigateToClientPageToSearchForClient(clientName)
         const clientDetails = await this.selenium.findElementBy("className", "clientDetails")
         const clientNewOwner = await this.selenium.getTextFromElement("tagName", "th:nth-child(5)", null, clientDetails)
         if (newOwner.toLowerCase() === clientNewOwner.toLowerCase()) {

@@ -8,8 +8,8 @@ class HomeTest {
     }
 
     // This method tests navigate to other pages then Home page by calling function in the HomePage and give it 3 parameters.
-    async testNavigateToOtherPages(locatorType, locatoeVal, index) {
-        await this.homePage.navigateToGivenPage(locatorType, locatoeVal, index)
+    async testNavigateToOtherPages(index) {
+        await this.homePage.navigateToGivenPage(index)
     }
 
     // This method test the color button by calling function in the HpmePage.
@@ -18,6 +18,6 @@ class HomeTest {
     }
 }
 const homeTest = new HomeTest()
-homeTest.testNavigateToOtherPages("className", "nav-btn", 2) // Third parameter: 0 - Analytcs, 1 - Actions, 2 - client.
+homeTest.testNavigateToOtherPages(2) // 0 - Analytcs, 1 - Actions, 2 - client.
 homeTest.addOrRemoveColor()
 
