@@ -9,11 +9,13 @@ class HomeTest {
 
     // This method tests navigate to other pages then Home page by calling function in the HomePage and give it 3 parameters.
     async testNavigateToOtherPages(index) {
+        await this.homePage.navigateToHomePage()
         await this.homePage.navigateToGivenPage(index)
     }
 
     // This method test the color button by calling function in the HpmePage.
     async addOrRemoveColor() {
+        await this.homePage.navigateToHomePage()
         await this.homePage.addOrRemoveColor()
     }
 }

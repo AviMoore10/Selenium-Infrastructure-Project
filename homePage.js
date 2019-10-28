@@ -1,7 +1,11 @@
 class HomePage {
     constructor(selenium) {
         this.selenium = selenium
+    }
+
+    async navigateToHomePage() {
         this.selenium.getURL("https://lh-crm.herokuapp.com/")
+        console.log("Navigated to Home page")
     }
 
     // This Method gets index parameter to locate page button, click on this button and validate it navigate to the right page.

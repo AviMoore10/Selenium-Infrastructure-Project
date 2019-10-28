@@ -1,81 +1,73 @@
 class ActionsPage {
-    constructor(selenium) {
+    constructor(selenium,logger) {
+        this.logger = logger
         this.selenium = selenium
+    }
+
+    // This function navigates to Actions page.
+    async navigateToActionsPage() {
         this.selenium.getURL("https://lh-crm.herokuapp.com/actions")
+        this.logger.info("Navigated to Actions page")
     }
 
-    // The method gets two strings variables first name and last name of client as parameters, navigate from Actions page to 
-    // Client page, type name in the select field and type the first name and last name strings inthe search field.
-    async NavigateToClientPageToSearchForClient(clientName) {
-        const webPagesButtons = await this.selenium.findElementListBy("className", "nav-btn")
-        await this.selenium.clickElement(null, null, webPagesButtons[2])
-        await this.selenium.write("name", "className", "select-css")
-        const searchClients = await this.selenium.findElementBy("className", "search-clients")
-        await this.selenium.write(clientName ,"tagName", "input", null, searchClients)
-        console.log("clients list updated")
+    // The function waiting, using 1 second sleep to the pop up massage after creating/updating client, then by checking its nessage
+    // validate if the client was added/updated or nor and console accordinglly.
+    async validatePopUpMessageInfo() {
         await this.selenium.sleep()
-    }
-
-    // The method gets two strings variables first name and last name of client as parameters, runs all over the client list and 
-    // make sure all clients has this name.
-    async validateClientExist(firstName, lastName) {
-        const clientsResults = await this.selenium.findElementListBy("className", "clientDetails")
-        let clientResultFirstName
-        let clientResultLastName
-        let counter = 0
-        if (!clientsResults) {
-            console.log("The client wasn't created")
+        const actionContainer = await this.selenium.findElementBy("className", "actions-container")
+        const popUpResult = await this.selenium.getTextFromElement("tagName", "div:nth-child(4)", null, actionContainer)
+        if (popUpResult == "UPDATE SUCCESSFUL") {
+            this.logger.info("The pop up message shows: 'UPDATE SUCCESSFUL'")
         }
-        else {
-            for (let client of clientsResults) {
-                clientResultFirstName = await this.selenium.getTextFromElement("tagName", "th", null, client)
-                clientResultLastName = await this.selenium.getTextFromElement("tagName", "th:nth-child(2)", null, client)
-                if (firstName.toLowerCase() === clientResultFirstName.toLowerCase() 
-                    && lastName.toLowerCase() === clientResultLastName.toLowerCase()) {
-                        counter++
-                }
-                const clientsResultsLength = clientsResults.length
-                if (counter === clientsResultsLength) {
-                    console.log("The client was found")
-                }
-                else {
-                    console.log("The client wasn't found")
-                }
-            }
+        else if (popUpResult == "SOME DETAILS ARE MISSING") {
+            this.logger.error("The pop up message shows: 'SOME DETAILS ARE MISSING'")
         }
     }
 
-    // The method gets all 5 parameters to create new client and type them in their fields.
-    async addClient(firstName, lastName, country, owner, email) {
+    // The function fill in the ADD CLIENT fields to create new client then call to another function that checks the pop up message.
+    async createClient(firstName, lastName, country, owner, email) {
         await this.selenium.write(firstName, "id", "firstName")
         await this.selenium.write(lastName, "id", "lastName")
         await this.selenium.write(country, "id", "country")
         await this.selenium.write(owner, "css", "input#owner")
         await this.selenium.write(email, "id", "email")
         await this.selenium.clickElement("className", "add-client-btn")
+        await this.validatePopUpMessageInfo(firstName, lastName)
     }
 
-    // This function gets 2 parameters - client name and name of new owner. The function type the client name in the client field
-    // and type the new owner name in the 'Transfer ownership to' field and click the Transfer button, then using 
-    // NavigateClientPageSearchForClient function nevaigate to Client page and search for the client and compare his owner
-    // name to the new owner name parameter to validate the transfer.
-    async updateClientDetails(clientName, newOwner) {
+    // This function typing the client name in the Client field in the UPDATE area.
+    async typeClientNameInUpdateArea(clientName) {
         const clientInput = await this.selenium.findElementBy("className", "client-input")
         await this.selenium.write(clientName, "tagName", "input", null, clientInput)
-        const updateClient = await this.selenium.findElementBy("className", "update-client")
-        await this.selenium.write(newOwner, "tagName", "input", null, updateClient)
-        const changeOwner = await this.selenium.findElementBy("className", "change-owner")
-        const changeOwnerButton = await this.selenium.findElementBy("tagName", "th:nth-child(3)", changeOwner)
-        await this.selenium.clickElement("tagName", "input", null, changeOwnerButton)
-        await this.selenium.sleep()
-        await this.NavigateToClientPageToSearchForClient(clientName)
-        const clientDetails = await this.selenium.findElementBy("className", "clientDetails")
-        const clientNewOwner = await this.selenium.getTextFromElement("tagName", "th:nth-child(5)", null, clientDetails)
-        if (newOwner.toLowerCase() === clientNewOwner.toLowerCase()) {
-            console.log("The new Owner updated")
+    }
+
+    // The function gets parameter that contain one of the option that can be change in the UPDATE area and another parameter that
+    // contains the new value to update. The function checkes what option the first parameter contain and according to that do the
+    // update.
+    async changeClientDetailInUpdateArea(whatToChange, newValue) {
+        if (whatToChange.toLowerCase() == "owner") {
+            const changeOwner = await this.selenium.findElementBy("className", "change-owner")
+            const updateOwner = await this.selenium.findElementBy("tagName", "th:nth-child(2)", changeOwner)
+            await this.selenium.write(newValue, "tagName", "input", null, updateOwner)
+            const changeOwnerButton = await this.selenium.findElementBy("tagName", "th:nth-child(3)", changeOwner)
+            await this.selenium.clickElement("tagName", "input", null, changeOwnerButton)
+            await this.selenium.sleep()
+        }
+        else if (whatToChange.toLowerCase() == "email") {
+            const changeEmail = await this.selenium.findElementBy("id", "change-email-type")
+            const updateEmail = await this.selenium.findElementBy("tagName", "th:nth-child(2)", changeEmail)
+            await this.selenium.write(newValue, "tagName", "input", null, updateEmail)
+            const changeEmailButton = await this.selenium.findElementBy("tagName", "th:nth-child(3)", changeEmail)
+            await this.selenium.clickElement("tagName", "input", null, changeEmailButton)
+            await this.selenium.sleep()
+        }
+        else if (whatToChange.toLowerCase() == "sold") {
+            const changeSold = await this.selenium.findElementBy("className", "change-sold")
+            const updateSold = await this.selenium.findElementBy("tagName", "th:nth-child(2)", changeSold)
+            await this.selenium.clickElement("tagName", "input", null, updateSold)
         }
         else {
-            console.log("The new Owner wasn't updated")
+            this.logger.error("Please check carefully your arguments and try again.")
         }
     }
 }

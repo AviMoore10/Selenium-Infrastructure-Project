@@ -3,44 +3,71 @@ const ActionsPage = require('./actionsPage')
 const BasePage = require('./BasePage')
 
 class AnalyticsPageTest {
-    constructor() {
-        this.selenium = new BasePage().selenium
-        this.actionsPage = new ActionsPage(this.selenium)
-        this.analyticsPage = new AnalyticsPage(this.selenium)
+    constructor(testName) {
+        this.Selenium = new BasePage(testName)
+        this.logger = this.Selenium.logger
+        this.Selenium = this.Selenium.selenium
+        this.actionsPage = new ActionsPage(this.Selenium, this.logger)
+        this.analyticsPage = new AnalyticsPage(this.Selenium, this.logger)
     }
 
-    // this function gets client name as parameter and using calling three function it checkes the current amount of clients that
-    // email sent to them, then create client that hadn't sent email to, send him email and validate that the email sent to him.
-    async sendEmailToClient(clientName) {
-        const amountOfSentEmails = await this.analyticsPage.currentNumbersOfSentEmails()
-        await this.actionsPage.addClient("gugu2", "Moore", "Israel", "janice", "aaaa@gmail.com")
-        await this.analyticsPage.sendEmailToClient(amountOfSentEmails, clientName)
+    // this function checks the number of sent emails to costumer, creates new costumer and send him email, then validate the amount
+    // of sent email grows in one.
+    async sendEmailToClient(firstName, lastNmae) {
+        await this.analyticsPage.navigateToAnalyticsPage()
+        const amountOfSentEmails = await this.analyticsPage.getAmountOfChosenPadge(1)
+        await this.actionsPage.navigateToActionsPage()
+        await this.actionsPage.createClient(firstName, lastNmae, "Israel", "janice", "aaaa@gmail.com")
+        await this.actionsPage.validatePopUpMessageInfo()
+        await this.actionsPage.typeClientNameInUpdateArea(firstName + " " + lastNmae)
+        await this.actionsPage.changeClientDetailInUpdateArea("email", "a")
+        await this.actionsPage.validatePopUpMessageInfo()
+        await this.analyticsPage.navigateToAnalyticsPage()
+        const newAmountOfSentEmails = await this.analyticsPage.getAmountOfChosenPadge(1)
+        if (parseInt(newAmountOfSentEmails) == parseInt(amountOfSentEmails) + 1) {
+            this.logger.info("The email was sent successfully")
+        }
+        else {
+            this.logger.error("The email wasn't sent successfully")
+        }
     }
 
     // This function gets the current amount outstanding clients, navigate to Action page, create new client, in the UPDATE area
     // change his status to sold client, then navigate to analytics page to validate that the outstanding client number updated.
-    async sellToClient(clientName) {
-        const AmountOfOutstandingClients = await this.analyticsPage.getAmountOfChosenPadge(2)
-        await this.analyticsPage.navigateToChosenPage(1)
-        await this.actionsPage.addClient("gugu2", "Moore", "Israel", "janice", "aaaa@gmail.com")
-        await this.analyticsPage.sellAndValidateSoldToCostumer(AmountOfOutstandingClients, clientName)
+    async sellToClient(firstNmae, lastName) {
+        await this.analyticsPage.navigateToAnalyticsPage()
+        const amountOfOutstandingClients = await this.analyticsPage.getAmountOfChosenPadge(2)
+        await this.actionsPage.navigateToActionsPage()
+        await this.actionsPage.createClient(firstNmae, lastName, "Israel", "janice", "aaaa@gmail.com")
+        await this.actionsPage.typeClientNameInUpdateArea(firstNmae + " " + lastName)
+        await this.actionsPage.changeClientDetailInUpdateArea("sold")
+        await this.actionsPage.validatePopUpMessageInfo()
+        await this.analyticsPage.navigateToAnalyticsPage()
+        const newAmountOfOutstandingClients = await this.analyticsPage.getAmountOfChosenPadge(2)
+        if (parseInt(newAmountOfOutstandingClients) == parseInt(amountOfOutstandingClients) + 1) {
+            this.logger.info("Sold to costumer successfully")
+        }
+        else {
+            this.logger.error("Didn't Sold to costumer")
+        }
     }
 
     // This function Choosing option from the Sales By input list and then validate that the paragraph show relevant columns
     // according to the chosen option.
     async showEmailTypeInSalesBy(optionIndex, number) {
+        await this.analyticsPage.navigateToAnalyticsPage()
         const salesByInput = await this.analyticsPage.clickAndGetSalesByInputElement()
         const arrayOfSalesByColumns = await this.analyticsPage.selectOptionFromSalesByMenu(salesByInput, number, optionIndex)
         await this.analyticsPage.validateNumberOfColumns(arrayOfSalesByColumns, number)
     }
 }
 
-const analyticsPageTest = new AnalyticsPageTest()
+const analyticsPageTest = new AnalyticsPageTest("analyticsPage")
 
 async function runAnalyticsPageTest() {
-    analyticsPageTest.sendEmailToClient("gugu2 moore")
-    analyticsPageTest.sellToClient("gugu2 moore")
-    analyticsPageTest.showEmailTypeInSalesBy(2, 4) // Arguments: first - Sales By optionindex, second - number of expected columns.
+    // analyticsPageTest.sendEmailToClient("vuvu", "moore")
+    // analyticsPageTest.sellToClient("fufu", "moore")
+    analyticsPageTest.showEmailTypeInSalesBy(2, 4) // Arguments: first - Sales By option index, second - number of expected columns.
 }
 
 runAnalyticsPageTest()
