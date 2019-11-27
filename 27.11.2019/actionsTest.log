@@ -1,0 +1,6 @@
+2019-11-27 13:12:43 info [actionsTest.js]: Navigated to Actions page
+2019-11-27 13:12:52 info [actionsTest.js]: The pop up message shows: 'UPDATE SUCCESSFUL'
+2019-11-27 13:12:52 info [actionsTest.js]: Navigated to Client page
+2019-11-27 13:12:56 info [actionsTest.js]: itarate 1 - The number of the clients equal to the loop iterates - All clients details are correct.
+2019-11-27 13:12:57 info [actionsTest.js]: itarate 2 - The number of the clients equal to the loop iterates - All clients details are correct.
+2019-11-27 13:12:57 info [actionsTest.js]: Add Client test completed.

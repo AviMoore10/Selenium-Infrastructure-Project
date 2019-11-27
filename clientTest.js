@@ -38,8 +38,8 @@ let clientPageTest = new ClientsPageTest('clientTest')
 
 async function runClientPageTests() {
     // await clientPageTest.clickOnArrowToNavigateAllPages("next") // Stability test.
-    await clientPageTest.searchForClient("owner", "Leila Howe")
-    // await clientPageTest.checkClientDetailsPopUpScreen() // Stability test.
+    // await clientPageTest.searchForClient("owner", "Leila Howe")
+    await clientPageTest.checkClientDetailsPopUpScreen() // Stability test.
 }
 
 runClientPageTests()

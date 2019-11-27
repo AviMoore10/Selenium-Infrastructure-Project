@@ -1,0 +1,7 @@
+2019-11-27 13:14:07 info [analyticsTest.js]: Navigated to Analitics page
+2019-11-27 13:14:15 info [analyticsTest.js]: Navigated to Actions page
+2019-11-27 13:14:18 info [analyticsTest.js]: The pop up message shows: 'UPDATE SUCCESSFUL'
+2019-11-27 13:14:19 info [analyticsTest.js]: The pop up message shows: 'UPDATE SUCCESSFUL'
+2019-11-27 13:14:21 error [analyticsTest.js]: The pop up message shows: 'SOME DETAILS ARE MISSING'
+2019-11-27 13:14:21 info [analyticsTest.js]: Navigated to Analitics page
+2019-11-27 13:14:30 error [analyticsTest.js]: The email wasn't sent successfully

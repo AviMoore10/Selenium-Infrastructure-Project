@@ -62,12 +62,12 @@ class AnalyticsPageTest {
     }
 }
 
-const analyticsPageTest = new AnalyticsPageTest("analyticsPage")
+const analyticsPageTest = new AnalyticsPageTest("analyticsTest")
 
 async function runAnalyticsPageTest() {
-    // analyticsPageTest.sendEmailToClient("vuvu", "moore")
+    analyticsPageTest.sendEmailToClient("vuvu", "moore")
     // analyticsPageTest.sellToClient("fufu", "moore")
-    analyticsPageTest.showEmailTypeInSalesBy(2, 4) // Arguments: first - Sales By option index, second - number of expected columns.
+    // analyticsPageTest.showEmailTypeInSalesBy(2, 4) // Arguments: first - Sales By option index, second - number of expected columns.
 }
 
 runAnalyticsPageTest()

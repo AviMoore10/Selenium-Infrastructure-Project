@@ -29,10 +29,10 @@ class HomePage {
         await this.selenium.clickElement("className", "color-btn")
         const ColorButtonNewText = await this.selenium.getTextFromElement("className", "color-btn")
         if (colorButtonText != ColorButtonNewText) {
-            console.log("Page color status changed successfully")
+            this.logger.info("Page color status changed successfully")
         }
         else {
-            console.log("Page color status hasn't changed successfully")
+            this.logger.info("Page color status hasn't changed successfully")
         }
     }
 }

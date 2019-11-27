@@ -36,15 +36,15 @@ class ActionsPageTest {
     }
 }
 
-const actionsPageTest = new ActionsPageTest("actionTest")
+const actionsPageTest = new ActionsPageTest("actionsTest")
 
 async function runActionsPageTest() {
-    // await actionsPageTest.addClient("gugu2", "Moore", "Israel", "janice", "aaaa@gmail.com")
-    /* This line is a note --> Negative test, country argument is missing, please make sure the input client name isn't already exist.*/
+    await actionsPageTest.addClient("gugu2", "Moore", "Israel", "janice", "aaaa@gmail.com")
+        /* This line is a note --> Negative test, country argument is missing, please make sure the input client name isn't already exist.*/
     // await actionsPageTest.addClient("aaaa", "Moore", "", "janice", "aaaa@gmail.com")
     // await actionsPageTest.updateClientDetails("gugu2 moore", "email", "a")
-    /* This line is a note --> negative test, the third argument is empty.*/
-    await actionsPageTest.updateClientDetails("gugu2 moore", "email", "") 
+        /* This line is a note --> negative test, the third argument is empty.*/
+    // await actionsPageTest.updateClientDetails("gugu2 moore", "email", "") 
 }
 
 runActionsPageTest()

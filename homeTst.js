@@ -19,7 +19,7 @@ class HomeTest {
         await this.homePage.addOrRemoveColor()
     }
 }
-const homeTest = new HomeTest()
+const homeTest = new HomeTest('homeTest')
 homeTest.testNavigateToOtherPages(2) // 0 - Analytcs, 1 - Actions, 2 - client.
 homeTest.addOrRemoveColor()
 
